@@ -1,3 +1,4 @@
+
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
@@ -11,6 +12,24 @@ const productSchema = new mongoose.Schema({
     },
     featured:{
         type:Boolean,
+        default: false
+    },
+    rating:{
+        type:Number,
+        default:4.5
+    },
+    createdAt:{
+        type:Date,
+        default:Date.now()
+    },
+    company:{
+        type:String,
+        type:String,
+        type:Date,
+        default:Date.now()
+    },
+    company:{
+        type:String,
         default: false
     },
     rating:{

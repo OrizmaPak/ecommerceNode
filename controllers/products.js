@@ -1,8 +1,8 @@
+const Product = require('/models/product')
 
-
-const getAllProductsStatic =(req, res)=>{
-    throw new Error('this is the mother fucking error');
-   return res.status(200).json({msg: 'products testing route'})
+const getAllProductsStatic =async(req, res)=>{
+    await Product.find({})
+   return res.status(200).json(Product);
 }
 
 const getAllProducts =(req, res)=>{

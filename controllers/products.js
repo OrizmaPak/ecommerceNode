@@ -1,7 +1,7 @@
 const Product = require('../models/product')
 
 const getAllProductsStatic =async(req, res)=>{
-    const {featured, company, name, sort, select} = req.query;
+    const {featured, company, name, sort, select, numericFilters} = req.query;
     const objectQuery = {};
     if(featured){
         objectQuery.featured = featured === 'true' ? true : false;
@@ -11,6 +11,35 @@ const getAllProductsStatic =async(req, res)=>{
     }
     if(name){
         objectQuery.name = {$regex: name, $options: 'i'}
+    }
+    if(numericFilters){
+        const operationsMap = {
+            '>': '$gt',
+            '>=': '$gte',
+            '=': '$eq',
+            '<': '$lt',
+            '<=': '$lte',
+        } 
+        const regEx = /\b(>|>=|=|<|<=)\b/g
+        let filters = numericFilters.replace(regEx, (match)=>`-${operationsMap[match]}-`); 
+        // const options = ['price', 'rating'];
+        // filters = filters.split(',').forEach(item=>{
+        //     const [field, operator, value] = item.split('-')
+        //     if(options.includes(field)){
+        //        objectQuery[field] = {[operator]: Number(value)} 
+        //     }
+        // })
+        filters = filters.split(',');
+        for(i=0;i<filters.length;i++){
+            console.log(filters[i])
+            if(filters[i].split('-')[0] == 'price'){ 
+                objectQuery[filters[i].split('-')[0]] = { [filters[i].split('-')[1]]: Number(filters[i].split('-')[2])}
+            }
+            if(filters[i].split('-')[0] == 'rating'){ 
+                objectQuery[filters[i].split('-')[0]] = { [filters[i].split('-')[1]]: Number(filters[i].split('-')[2])}
+            }
+        }
+        console.log('filters', filters);
     }
     let result = Product.find(objectQuery)
     if(sort){
